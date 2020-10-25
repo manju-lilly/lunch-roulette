@@ -1,0 +1,22 @@
+{
+  "Parameters": {
+
+  },
+  "Tags": {
+    "DeployEnvironment": "prod",
+<<<<<<< HEAD
+    "AppName": "MDIDS-regQuest-EDB-Process-Batch",
+=======
+    "AppName": "MDIT_regQuest-GRA-Enrich",
+>>>>>>> 68902b86cda59d14a6abc4a619147c7e38f876e8
+    "CostCenter": "100B284",
+    "CostCenterApprover": "C219054",
+    "SystemOwner": "NT90421",
+    "SystemCustodian": "C219054",
+    "PrimaryItContact": "C218142",
+    "Level1BusinessArea": "MDIT",
+    "DataClassification": "Yellow",
+    "Hipaa": "No"
+  },
+  "StackPolicy": {}
+}

@@ -1,0 +1,18 @@
+{
+  "Parameters": {
+
+  },
+  "Tags": {
+    "DeployEnvironment": "qa",
+    "AppName": "MDIT_regQuest-GRA-Enrich",
+    "CostCenter": "100B284",
+    "CostCenterApprover": "C219054",
+    "SystemOwner": "NT90421",
+    "SystemCustodian": "C219054",
+    "PrimaryItContact": "C218142",
+    "Level1BusinessArea": "MDIT",
+    "DataClassification": "Yellow",
+    "Hipaa": "No"
+  },
+  "StackPolicy": {}
+}

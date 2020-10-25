@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform:  'AWS::Serverless-2016-10-31'
+
+Description: >
+    lunch_roulette
+#
+# NOTE: You will need IAM Permissions Boundaries set on all your IAM Roles. You can use the line below to get the correct
+#  boundary applied
+#
+#            PermissionsBoundary: !Sub "arn:aws:iam::${AWS::AccountId}:policy/LZ-IAM-Boundary"
+#
+Resources:
+    rAwsedbregQuestprocessRole:
+        Type: AWS::IAM::Role
+        Properties:
+            RoleName: aws_regquest_gra_es
+            PermissionsBoundary: !Sub "arn:aws:iam::${AWS::AccountId}:policy/LZ-IAM-Boundary"
+            Policies:
+               - PolicyName: aws_mdit_learning_roulette_policy
+                 PolicyDocument:
+                   Version: 2012-10-17
+                   Statement:
+                       - Effect: Allow
+                         Action:
+                           - s3:*
+                           - es:*
+                           - logs:CreateLogGroup
+                           - logs:CreateLogStream
+                           - logs:PutLogEvents
+                           - ec2:CreateNetworkInterface
+                           - ec2:DeleteNetworkInterface
+                         Resource: '*'
+            ManagedPolicyArns:
+                - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+            AssumeRolePolicyDocument:
+                Version: 2012-10-17
+                Statement:
+                  - Action:
+                      - 'sts:AssumeRole'
+                    Effect: Allow
+                    Principal:
+                      Service:
+                        - lambda.amazonaws.com
