@@ -1,5 +1,4 @@
-# MDIT_regQuest-GRA-Enrich
-
+# Lunch Roulette
 
 ## Getting Started
 
