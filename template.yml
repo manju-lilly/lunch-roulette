@@ -10,10 +10,10 @@ Description: >
 #            PermissionsBoundary: !Sub "arn:aws:iam::${AWS::AccountId}:policy/LZ-IAM-Boundary"
 #
 Resources:
-    rAwsedbregQuestprocessRole:
+    rAwslunchRouletteRole:
         Type: AWS::IAM::Role
         Properties:
-            RoleName: aws_regquest_gra_es
+            RoleName: aws_roulette_learning_role
             PermissionsBoundary: !Sub "arn:aws:iam::${AWS::AccountId}:policy/LZ-IAM-Boundary"
             Policies:
                - PolicyName: aws_mdit_learning_roulette_policy
@@ -23,12 +23,9 @@ Resources:
                        - Effect: Allow
                          Action:
                            - s3:*
-                           - es:*
                            - logs:CreateLogGroup
                            - logs:CreateLogStream
                            - logs:PutLogEvents
-                           - ec2:CreateNetworkInterface
-                           - ec2:DeleteNetworkInterface
                          Resource: '*'
             ManagedPolicyArns:
                 - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
