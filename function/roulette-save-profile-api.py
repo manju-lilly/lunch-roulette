@@ -39,25 +39,51 @@ class User:
 
 
 def handler(event, context):
-
     logging.info(json.dumps(event, default=str))
 
     if event != None:
+        action = event['action']
         user = User()
         for key, value in event.items():
             setattr(user, key, value)
 
-        user = RouletteUser(name=user.name, email=user.email, oid=user.oid, aboutYou=user.aboutyou,
-                            careerPath=user.careerpath, yearsExperience=user.yearofexperienceatlilly, stayIn=user.stayIn, pairedwith='')
+        user = RouletteUser(name=user.name, email=user.email, oid=user.oid, aboutYou=user.aboutyou if hasattr(user, 'aboutyou') else '',
+                            careerPath=user.careerpath if hasattr(user, 'careerPath') else '', yearsExperience=user.yearofexperienceatlilly if hasattr(user, 'yearofexperienceatlilly') else '',
+                            stayIn=user.stayIn if hasattr(user, 'stayIn') else '', pairedwith='')
 
         try:
             pairme = PairMe(user, logger)
-            status = pairme.create_profile()
+            if action == 'create':
+                status = pairme.create_profile()
+                message = f'profile for {user.name} been been created successfully!'
+                return {
+                    'statusCode': 200,
+                    'body': json.dumps(message)
+                }
 
+            elif action == 'get':
+                status = pairme.get_profile()
+                if not status:
+                    return {
+                        'statusCode': 200,
+                        'body': json.dumps(f'profile for {user.name} was not found!')
+                    }
+                return {
+                    'statusCode': 200,
+                    'body': status
+                }
+
+            elif action == 'getpair':
+                status = pairme.get_matched_pair()
+                message = status
+                return {
+                    'statusCode': 200,
+                    'body': json.dumps(status)
+                }
         except Exception as ex:
             raise ex
 
         return {
             'statusCode': 200,
-            'body': json.dumps('Hello from Lambda!')
+            'body': message
         }

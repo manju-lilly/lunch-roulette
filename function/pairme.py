@@ -120,27 +120,30 @@ class PairMe(object):
         dynamodb_resource= boto3.resource('dynamodb')
         dynamodb_client = boto3.client('dynamodb')
         
-        table = db_resource.Table(self.TABLE_NAME)
+        table = dynamodb_resource.Table(self.TABLE_NAME)
         
         # scan for the user
         response = table.scan(FilterExpression=Attr('name').eq(self.user.name))
         
+        
         ## if user has matched pair - return - otherwise - pair user 
-        if len(response['Items']) == 0:
+        if len(response['Items']) != 0:
             item = response['Items'][0]
+            
             if item['pairedwith']!='':
-                return {'name':item['name'], 'email':item['email'], 'pairedwith': item['pairedwith']}
+                return item['pairedwith']
                 
             else:
                 
                 ## list of user from table - randomly pick an assignment
-                response_available = dynamodb_client.query(TableName=table,KeyConditionExpression="stayIn = :stayIn AND pairedwith='' AND name !=:name" ,
-                ExpressionAttributeValues={
-                    ':stayIn': {'S': 'yes'},
-                    ':name':{'S':self.user.name}
-                })
+                print(self.user.name)
+                response_available = table.scan(FilterExpression=Attr('stayIn').eq("yes") & Attr('pairedwith').eq(''))
+
+                print('available',response_available['Items'])
+                if len(response_available['Items'])==0:
+                    return ''
                 
-                random_user = random.choice(response_available['Items'])
+                random_user = random.choice(list(filter(lambda x: x['name']!=self.user.name,response_available['Items'])))
                 
                 ## save random user -
                 selected_user = random_user['name']
@@ -165,11 +168,29 @@ class PairMe(object):
                     response_paired_update = table.update_item(Key={'unique_id': str(paired['unique_id'])},UpdateExpression="set  pairedwith=:pairedwith",ExpressionAttributeValues={':pairedwith' : item['name']})
                     
                     
-            return  {'name':item['name'], 'email':item['email'], 'pairedwith': item['pairedwith']}
+            return  selected_user
             
         return False
-                    
-
+    
+    def get_profile(self):
+        # initialie AWS
+        dynamodb_resource= boto3.resource('dynamodb')
+        dynamodb_client = boto3.client('dynamodb')
+        
+        table = dynamodb_resource.Table(self.TABLE_NAME)
+        
+        # scan for the user
+        
+        response = table.scan(FilterExpression=Attr('name').eq(self.user.name))
+        
+        ## if user has matched pair - return - otherwise - pair user 
+        if len(response['Items']) > 0:
+            item = response['Items'][0]
+            # name email oid aboutYou careerPath yearsExperience stayIn pairedwith
+            return {'name':item['name'], 'email':item['email'], 'oid': item['oid'], 'aboutYou': item['aboutYou'], 'careerPath': item['careerPath'], 'yearsExperience': item['yearsExperience'], 'stayIn':item['stayIn'], 'pairedwith': item['pairedwith']}
+                
+        return False
+        
     
     ## Helpers
     def make_id(self):
